@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Investidores Audiovisuais</title>
+    <meta name="description" content="Análise de investidores em projetos audiovisuais via Lei do Audiovisual (Art. 1)">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card">
+            <div class="login-header">
+                <span class="logo-icon">🎬</span>
+                <h2>CineTax Login</h2>
+                <p>Acesse o painel de investidores</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" placeholder="Digite seu usuário" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" placeholder="Digite sua senha" required>
+                </div>
+                <div id="login-error" class="login-error"></div>
+                <button type="submit" class="btn-login">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="app" id="app-container" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🎬</span>
+                    <span class="logo-text">CineTax</span>
+                </div>
+                <p class="logo-subtitle">Investidores Audiovisuais</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#overview" class="nav-item active" data-section="overview">
+                    <span class="nav-icon">📊</span>
+                    <span>Visão Geral</span>
+                </a>
+                <a href="#sectors" class="nav-item" data-section="sectors">
+                    <span class="nav-icon">🏢</span>
+                    <span>Por Setor</span>
+                </a>
+                <a href="#investors" class="nav-item" data-section="investors">
+                    <span class="nav-icon">💰</span>
+                    <span>Top Investidores</span>
+                </a>
+                <a href="#geographic" class="nav-item" data-section="geographic">
+                    <span class="nav-icon">🗺️</span>
+                    <span>Por Estado</span>
+                </a>
+                <a href="#timeline" class="nav-item" data-section="timeline">
+                    <span class="nav-icon">📈</span>
+                    <span>Evolução Temporal</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="data-info">
+                    <span class="info-label">Fonte de dados</span>
+                    <span class="info-value">ANCINE - Lei do Audiovisual</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-title">
+                    <h1 id="section-title">Visão Geral</h1>
+                    <p id="section-subtitle">Análise de captações via Lei do Audiovisual (Art. 1)</p>
+                </div>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="Buscar investidor...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- KPI Cards -->
+            <section class="kpi-section">
+                <div class="kpi-card">
+                    <div class="kpi-icon">💵</div>
+                    <div class="kpi-content">
+                        <span class="kpi-value" id="kpi-total">R$ 0</span>
+                        <span class="kpi-label">Total Captado</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon">📝</div>
+                    <div class="kpi-content">
+                        <span class="kpi-value" id="kpi-captacoes">0</span>
+                        <span class="kpi-label">Captações</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon">🏦</div>
+                    <div class="kpi-content">
+                        <span class="kpi-value" id="kpi-investidores">0</span>
+                        <span class="kpi-label">Investidores Únicos</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon">📅</div>
+                    <div class="kpi-content">
+                        <span class="kpi-value" id="kpi-periodo">-</span>
+                        <span class="kpi-label">Período</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Overview -->
+            <section id="section-overview" class="content-section active">
+                <div class="charts-grid">
+                    <div class="chart-card large">
+                        <div class="chart-header">
+                            <h3>Evolução Anual de Captações</h3>
+                            <div class="chart-legend" id="timeline-legend"></div>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="chart-timeline"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Distribuição por Setor</h3>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="chart-sectors"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Top 10 Estados</h3>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="chart-states"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Investors Quick View -->
+                <div class="quick-view-card">
+                    <div class="chart-header">
+                        <h3>🏆 Top 10 Investidores por Volume</h3>
+                        <a href="#investors" class="view-all-link" data-section="investors">Ver todos →</a>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table" id="top-investors-quick">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Investidor</th>
+                                    <th>Setor</th>
+                                    <th>UF</th>
+                                    <th>Total Investido</th>
+                                    <th>Captações</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Sectors -->
+            <section id="section-sectors" class="content-section">
+                <div class="insight-banner">
+                    <div class="insight-icon">💡</div>
+                    <div class="insight-content">
+                        <strong>Insight Principal:</strong> O setor de <span class="highlight">Bancos e
+                            Financeiras</span> representa 35% de todo o volume captado, sendo o alvo mais estratégico
+                        para prospecção.
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Volume por Setor</h3>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="chart-sectors-bar"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Empresas por Setor</h3>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="chart-sectors-companies"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sectors-grid" id="sectors-cards"></div>
+            </section>
+
+            <!-- Section: Investors -->
+            <section id="section-investors" class="content-section">
+                <div class="filters-bar">
+                    <div class="filter-group">
+                        <label>Setor:</label>
+                        <select id="filter-sector">
+                            <option value="">Todos os setores</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Estado:</label>
+                        <select id="filter-state">
+                            <option value="">Todos os estados</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Ordenar por:</label>
+                        <select id="filter-sort">
+                            <option value="total">Maior volume</option>
+                            <option value="count">Mais captações</option>
+                            <option value="avg">Maior média</option>
+                        </select>
+                    </div>
+                    <button class="btn-export" id="btn-export">
+                        <span>📥</span> Exportar CSV
+                    </button>
+                </div>
+
+                <div class="table-container full-height">
+                    <table class="data-table" id="investors-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Investidor</th>
+                                <th>CNPJ</th>
+                                <th>Setor</th>
+                                <th>UF</th>
+                                <th>Total Investido</th>
+                                <th>Captações</th>
+                                <th>Média/Captação</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div class="pagination" id="pagination"></div>
+            </section>
+
+            <!-- Section: Geographic -->
+            <section id="section-geographic" class="content-section">
+                <div class="charts-grid">
+                    <div class="chart-card large">
+                        <div class="chart-header">
+                            <h3>Volume por Estado</h3>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="chart-states-full"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="states-grid" id="states-cards"></div>
+            </section>
+
+            <!-- Section: Timeline -->
+            <section id="section-timeline" class="content-section">
+                <div class="charts-grid">
+                    <div class="chart-card full-width">
+                        <div class="chart-header">
+                            <h3>Histórico Completo de Captações (1995-2025)</h3>
+                        </div>
+                        <div class="chart-body tall">
+                            <canvas id="chart-timeline-full"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-banner">
+                    <div class="insight-icon">📅</div>
+                    <div class="insight-content">
+                        <strong>Sazonalidade:</strong> O mês de <span class="highlight">dezembro</span> concentra a
+                        maior parte das captações, pois empresas buscam deduzir impostos antes do fechamento fiscal.
+                    </div>
+                </div>
+
+                <div class="years-grid" id="years-cards"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
